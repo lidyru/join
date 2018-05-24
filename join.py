@@ -10,6 +10,7 @@ person = [
     {'name': 'Григорий', 'cityid': 4, 'surname': 'test'}
 ]
 
+
 def pre(table, key1):
     pre_table = dict()
     table = list(table)
@@ -17,10 +18,11 @@ def pre(table, key1):
         tmp_el = el.copy()
         del tmp_el[key1]
         if el[key1] not in pre_table:
-            pre_table[el[key1]]= [tmp_el]
+            pre_table[el[key1]] = [tmp_el]
         else:
             pre_table[el[key1]].append(tmp_el)
     return pre_table
+
 
 def join_inner(first_table, second_table, key1, key2):
     join_inner_table = []
@@ -35,6 +37,7 @@ def join_inner(first_table, second_table, key1, key2):
                 join_inner_table.append(result_dict)
     return join_inner_table
 
+
 def outer(inner_table, pre_table2, first_table, outer_keys2, key2):
     for key in outer_keys2:
         tmp_dict = dict()
@@ -48,28 +51,32 @@ def outer(inner_table, pre_table2, first_table, outer_keys2, key2):
         inner_table.append(tmp_dict)
     return inner_table
 
+
 def join_outer(first_table, second_table, key1, key2):
-    pre_table1 = pre(first_table, key1)
-    pre_table2 = pre(second_table, key2)
+    pre_1 = pre(first_table, key1)
+    pre_2 = pre(second_table, key2)
     inner_table = join_inner(first_table, second_table, key1, key2)
-    outer_keys1 = [key for key in pre_table1.keys() if key not in pre_table2.keys()]
-    outer_keys2 = [key for key in pre_table2.keys() if key not in pre_table1.keys()]
-    outer(inner_table, pre_table1, second_table, outer_keys1, key1)
-    return outer(inner_table, pre_table2, first_table, outer_keys2, key2)
+    outer_keys1 = [key for key in pre_1.keys() if key not in pre_2.keys()]
+    outer_keys2 = [key for key in pre_2.keys() if key not in pre_1.keys()]
+    outer(inner_table, pre_1, second_table, outer_keys1, key1)
+    return outer(inner_table, pre_2, first_table, outer_keys2, key2)
+
 
 def join_right(first_table, second_table, key1, key2):
-    pre_table1 = pre(first_table, key1)
-    pre_table2 = pre(second_table, key2)
+    pre_1 = pre(first_table, key1)
+    pre_2 = pre(second_table, key2)
     inner_table = join_inner(first_table, second_table, key1, key2)
-    outer_keys1 = [key for key in pre_table1.keys() if key not in pre_table2.keys()]
-    return outer(inner_table, pre_table1, second_table, outer_keys1, key1)
+    outer_keys1 = [key for key in pre_1.keys() if key not in pre_2.keys()]
+    return outer(inner_table, pre_1, second_table, outer_keys1, key1)
+
 
 def join_left(first_table, second_table, key1, key2):
-    pre_table1 = pre(first_table, key1)
-    pre_table2 = pre(second_table, key2)
+    pre_1 = pre(first_table, key1)
+    pre_2 = pre(second_table, key2)
     inner_table = join_inner(first_table, second_table, key1, key2)
-    outer_keys2 = [key for key in pre_table2.keys() if key not in pre_table1.keys()]
+    outer_keys2 = [key for key in pre_2.keys() if key not in pre_1.keys()]
     return outer(inner_table, pre_table2, first_table, outer_keys2, key2)
+
 
 for el in join_inner(city, person, 'id', 'cityid'):
     print(el)
